@@ -20,8 +20,5 @@
     {
       "service_data_uuid": "00005242-0000-1000-8000-00805f9b34fb"
     }
-  ],
-  "platforms": [
-    "sensor"
   ]
 }
