@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
 
 from homeassistant.components.bluetooth import BluetoothScanningMode
 from homeassistant.components.bluetooth.passive_update_processor import (
@@ -10,10 +11,12 @@ from homeassistant.components.bluetooth.passive_update_processor import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_ADDRESS, Platform
-from homeassistant.core import HomeAssistant
 
 from .ble_device import HolyIotBluetoothDeviceData, HolyIotUpdate
-from .const import DOMAIN
+from .const import DOMAIN as DOMAIN
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 PLATFORMS: list[Platform] = [Platform.SENSOR]
 

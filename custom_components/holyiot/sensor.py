@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from homeassistant.components.bluetooth.passive_update_processor import (
     PassiveBluetoothDataProcessor,
     PassiveBluetoothDataUpdate,
@@ -15,12 +17,14 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import PERCENTAGE
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .ble_device import HolyIotUpdate
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 BATTERY_SENSOR_DESCRIPTION = SensorEntityDescription(
     key="battery",
@@ -45,7 +49,7 @@ def _battery_update_to_bluetooth_data_update(
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
+    _hass: HomeAssistant,
     entry: ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:

@@ -17,6 +17,7 @@ from .ble_device import HolyIotBluetoothDeviceData
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
+ERROR_DISCOVERY_INFO_NOT_SET = "Discovery info not set"
 
 
 class HolyIotConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -56,7 +57,8 @@ class HolyIotConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Confirm discovery from bluetooth step."""
-        assert self._discovery_info is not None
+        if self._discovery_info is None:
+            raise RuntimeError(ERROR_DISCOVERY_INFO_NOT_SET)
 
         name = self._discovery_info.name or self._discovery_info.address
         if user_input is not None:
