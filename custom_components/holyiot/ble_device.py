@@ -20,7 +20,8 @@ HOLYIOT_BATTERY_UNKNOWN: Final[int] = 0xFF
 
 @dataclass(slots=True)
 class HolyIotUpdate:
-    """Representation of a single HolyIot BLE update.
+    """
+    Representation of a single HolyIot BLE update.
 
     Only the battery field is exposed for now, but the
     structure is ready for future extensions (temperature,
@@ -32,7 +33,8 @@ class HolyIotUpdate:
 
 
 class HolyIotBluetoothDeviceData:
-    """Parse HolyIot BLE advertisements.
+    """
+    Parse HolyIot BLE advertisements.
 
     The implementation is inspired by ble_monitor's HolyIot
     parser, but only keeps the bits we currently need.
@@ -58,7 +60,8 @@ class HolyIotBluetoothDeviceData:
         return True
 
     def update(self, service_info: Any) -> HolyIotUpdate | None:
-        """Parse a BluetoothServiceInfoBleak into a HolyIotUpdate.
+        """
+        Parse a BluetoothServiceInfoBleak into a HolyIotUpdate.
 
         Returns None if the data does not match the expected
         HolyIot format.

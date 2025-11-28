@@ -21,8 +21,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .ble_device import HolyIotUpdate
-from .const import DOMAIN
-
 
 BATTERY_SENSOR_DESCRIPTION = SensorEntityDescription(
     key="battery",
@@ -36,7 +34,6 @@ def _battery_update_to_bluetooth_data_update(
     sensor_update: HolyIotUpdate,
 ) -> PassiveBluetoothDataUpdate:
     """Convert a HolyIotUpdate into a bluetooth data update."""
-
     entity_key = PassiveBluetoothEntityKey("battery", None)
 
     return PassiveBluetoothDataUpdate(
@@ -53,7 +50,6 @@ async def async_setup_entry(
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up the HolyIot BLE battery sensor platform."""
-
     coordinator: PassiveBluetoothProcessorCoordinator[HolyIotUpdate] = (
         entry.runtime_data
     )
@@ -81,5 +77,4 @@ class HolyIotBluetoothSensorEntity(
     @property
     def native_value(self) -> int | None:
         """Return the native value."""
-
         return self.processor.entity_data.get(self.entity_key)

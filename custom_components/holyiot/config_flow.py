@@ -6,7 +6,6 @@ import logging
 from typing import Any
 
 import voluptuous as vol
-
 from homeassistant.components.bluetooth import (
     BluetoothServiceInfoBleak,
     async_discovered_service_info,
@@ -16,7 +15,6 @@ from homeassistant.const import CONF_ADDRESS
 
 from .ble_device import HolyIotBluetoothDeviceData
 from .const import DOMAIN
-
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -28,7 +26,6 @@ class HolyIotConfigFlow(ConfigFlow, domain=DOMAIN):
 
     def __init__(self) -> None:
         """Initialize the config flow."""
-
         self._discovery_info: BluetoothServiceInfoBleak | None = None
         self._device: HolyIotBluetoothDeviceData | None = None
         self._discovered_devices: dict[str, str] = {}
@@ -59,7 +56,6 @@ class HolyIotConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Confirm discovery from bluetooth step."""
-
         assert self._discovery_info is not None
 
         name = self._discovery_info.name or self._discovery_info.address
@@ -79,7 +75,6 @@ class HolyIotConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle the user step to pick discovered device."""
-
         if user_input is not None:
             address = user_input[CONF_ADDRESS]
             await self.async_set_unique_id(address, raise_on_progress=False)

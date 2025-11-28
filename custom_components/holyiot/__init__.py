@@ -27,7 +27,6 @@ type HolyIotConfigEntry = ConfigEntry[
 
 async def async_setup_entry(hass: HomeAssistant, entry: HolyIotConfigEntry) -> bool:
     """Set up HolyIot BLE device from a config entry."""
-
     address = entry.data.get(CONF_ADDRESS) or entry.unique_id
     if address is None:
         return False
@@ -53,5 +52,4 @@ async def async_setup_entry(hass: HomeAssistant, entry: HolyIotConfigEntry) -> b
 
 async def async_unload_entry(hass: HomeAssistant, entry: HolyIotConfigEntry) -> bool:
     """Unload a config entry."""
-
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
