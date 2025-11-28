@@ -1,46 +1,65 @@
-# Notice
+# HolyIot BLE for Home Assistant
 
-The component and platforms in this repository are not meant to be used by a
-user, but as a "blueprint" that custom component developers can build
-upon, to make more awesome stuff.
+HolyIot BLE is a Home Assistant custom integration that passively listens to Bluetooth broadcast data from HolyIot devices and exposes sensor entities in Home Assistant, such as battery level.
 
-HAVE FUN! 😎
+Currently the integration is based on passive Bluetooth scanning and only creates battery level sensors.
 
-## Why?
+## Features
 
-This is simple, by having custom_components look (README + structure) the same
-it is easier for developers to help each other and for users to start using them.
+- Passively scans BLE broadcast data from HolyIot devices.
+- Automatically discovers and creates battery level sensors:
+	- Entity type: `sensor`
+	- Device class: `battery`
+	- Unit: `%`
+	- State class: `measurement`
 
-If you are a developer and you want to add things to this "blueprint" that you think more
-developers will have use for, please open a PR to add it :)
+## Installation
 
-## What?
+### Install via HACS (recommended)
 
-This repository contains multiple files, here is a overview:
+Add the repository as a **Custom repository**.
 
-File | Purpose | Documentation
--- | -- | --
-`.devcontainer.json` | Used for development/testing with Visual Studio Code. | [Documentation](https://code.visualstudio.com/docs/remote/containers)
-`.github/ISSUE_TEMPLATE/*.yml` | Templates for the issue tracker | [Documentation](https://help.github.com/en/github/building-a-strong-community/configuring-issue-templates-for-your-repository)
-`custom_components/integration_blueprint/*` | Integration files, this is where everything happens. | [Documentation](https://developers.home-assistant.io/docs/creating_component_index)
-`CONTRIBUTING.md` | Guidelines on how to contribute. | [Documentation](https://help.github.com/en/github/building-a-strong-community/setting-guidelines-for-repository-contributors)
-`LICENSE` | The license file for the project. | [Documentation](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/licensing-a-repository)
-`README.md` | The file you are reading now, should contain info about the integration, installation and configuration instructions. | [Documentation](https://help.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax)
-`requirements.txt` | Python packages used for development/lint/testing this integration. | [Documentation](https://pip.pypa.io/en/stable/user_guide/#requirements-files)
+1. In Home Assistant open **HACS → Integrations**.
+2. Click the top-right menu and select **Custom repositories**.
+3. Enter this repository URL:
 
-## How?
+		```text
+		https://github.com/xxddff/HolyIot-home-assistant
+		```
 
-1. Create a new repository in GitHub, using this repository as a template by clicking the "Use this template" button in the GitHub UI.
-1. Open your new repository in Visual Studio Code devcontainer (Preferably with the "`Dev Containers: Clone Repository in Named Container Volume...`" option).
-1. Rename all instances of the `integration_blueprint` to `custom_components/<your_integration_domain>` (e.g. `custom_components/awesome_integration`).
-1. Rename all instances of the `HolyIot BLE` to `<Your Integration Name>` (e.g. `Awesome Integration`).
-1. Run the `scripts/develop` to start HA and test out your new integration.
+4. Choose `Integration` as the Category and click **Add**.
+5. Return to **HACS → Integrations**, click the `+` button at the bottom right, search for `HolyIot BLE` or `holyiot` and install.
+6. After installation, restart Home Assistant as prompted.
 
-## Next steps
+## Configuration
 
-These are some next steps you may want to look into:
-- Add tests to your integration, [`pytest-homeassistant-custom-component`](https://github.com/MatthewFlamm/pytest-homeassistant-custom-component) can help you get started.
-- Add brand images (logo/icon) to https://github.com/home-assistant/brands.
-- Create your first release.
-- Share your integration on the [Home Assistant Forum](https://community.home-assistant.io/).
-- Submit your integration to [HACS](https://hacs.xyz/docs/publish/start).
+### Discovery and setup
+
+HolyIot devices are discovered by Home Assistant via Bluetooth broadcasts:
+
+1. Make sure your host has Bluetooth enabled and the Home Assistant Bluetooth integration is configured properly.
+2. After installation and restart, when a HolyIot device broadcasts, Home Assistant will show a new device discovery notification or list the device under **Settings → Devices & Services** for configuration.
+3. Follow the prompts to add the device (no manual address is usually required; just confirm the discovered device).
+
+After configuration, the system will automatically create corresponding battery sensor entities, for example:
+
+- `sensor.holyiot_battery` (the actual entity_id may vary by device).
+
+## Development & Testing
+
+The repository includes scripts and configuration for development:
+
+- Use the Dev Container (VS Code) to quickly start a development environment.
+- From the repository root run:
+
+		```bash
+		./scripts/develop
+		```
+
+		This starts a Home Assistant instance with the integration for local debugging.
+
+## Feedback & Support
+
+- Issues and suggestions: please open a GitHub Issue: <https://github.com/xxddff/HolyIot-home-assistant/issues>
+
+PRs are welcome to help improve the HolyIot BLE integration.
