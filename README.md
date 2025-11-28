@@ -22,10 +22,9 @@ Add the repository as a **Custom repository**.
 1. In Home Assistant open **HACS → Integrations**.
 2. Click the top-right menu and select **Custom repositories**.
 3. Enter this repository URL:
-
-		```text
-		https://github.com/xxddff/HolyIot-home-assistant
-		```
+```text
+https://github.com/xxddff/HolyIot-home-assistant
+```
 
 4. Choose `Integration` as the Category and click **Add**.
 5. Return to **HACS → Integrations**, click the `+` button at the bottom right, search for `HolyIot BLE` or `holyiot` and install.
@@ -52,14 +51,15 @@ The repository includes scripts and configuration for development:
 - Use the Dev Container (VS Code) to quickly start a development environment.
 - From the repository root run:
 
-		```bash
-		./scripts/develop
-		```
+```bash
+./scripts/develop
+```
 
-		This starts a Home Assistant instance with the integration for local debugging.
+This starts a Home Assistant instance with the integration for local debugging.
 
 ## Feedback & Support
 
 - Issues and suggestions: please open a GitHub Issue: <https://github.com/xxddff/HolyIot-home-assistant/issues>
+
 
 PRs are welcome to help improve the HolyIot BLE integration.
