@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import voluptuous as vol
@@ -15,6 +16,9 @@ from homeassistant.const import CONF_ADDRESS
 
 from .ble_device import HolyIotBluetoothDeviceData
 from .const import DOMAIN
+
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class HolyIotConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -33,13 +37,19 @@ class HolyIotConfigFlow(ConfigFlow, domain=DOMAIN):
         self, discovery_info: BluetoothServiceInfoBleak
     ) -> ConfigFlowResult:
         """Handle the bluetooth discovery step."""
-
-        await self.async_set_unique_id(discovery_info.address)
-        self._abort_if_unique_id_configured()
+        address = discovery_info.address
+        current_ids = self._async_current_ids(include_ignore=False)
+        if address in current_ids:
+            _LOGGER.debug("HolyIot discovery %s ignored: already configured", address)
+            return self.async_abort(reason="already_configured")
 
         device = HolyIotBluetoothDeviceData()
         if not device.supported(discovery_info):
+            _LOGGER.debug(
+                "HolyIot discovery %s ignored: not supported by parser", address
+            )
             return self.async_abort(reason="not_supported")
+        _LOGGER.debug("HolyIot discovered %s", address)
 
         self._discovery_info = discovery_info
         self._device = device
@@ -79,17 +89,26 @@ class HolyIotConfigFlow(ConfigFlow, domain=DOMAIN):
             )
 
         current_ids = self._async_current_ids(include_ignore=False)
-        for service_info in async_discovered_service_info(self.hass, connectable=False):
+        for service_info in async_discovered_service_info(self.hass):
             address = service_info.address
             if address in current_ids or address in self._discovered_devices:
                 continue
 
             device = HolyIotBluetoothDeviceData()
             if not device.supported(service_info):
+                _LOGGER.debug(
+                    "HolyIot cached candidate %s ignored: not supported by parser",
+                    address,
+                )
                 continue
 
             name = service_info.name or address
             self._discovered_devices[address] = name
+            _LOGGER.debug(
+                "HolyIot cached discovery %s (%s) added to user selection",
+                address,
+                name,
+            )
 
         if not self._discovered_devices:
             return self.async_abort(reason="no_devices_found")
