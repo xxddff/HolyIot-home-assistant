@@ -36,16 +36,14 @@ class HolyIotConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> ConfigFlowResult:
         """Handle the bluetooth discovery step."""
         address = discovery_info.address
-        current_ids = self._async_current_ids(include_ignore=False)
-        if address in current_ids:
-            _LOGGER.debug("HolyIot discovery %s ignored: already configured", address)
-            return self.async_abort(reason="already_configured")
+
+        # Use the Bluetooth address as the unique_id so Home Assistant
+        # can suppress duplicate discovery flows for the same device.
+        await self.async_set_unique_id(address)
+        self._abort_if_unique_id_configured()
 
         device = HolyIotBluetoothDeviceData()
         if not device.supported(discovery_info):
-            _LOGGER.debug(
-                "HolyIot discovery %s ignored: not supported by parser", address
-            )
             return self.async_abort(reason="not_supported")
         _LOGGER.debug("HolyIot discovered %s", address)
 
