@@ -1,57 +1,85 @@
-"""Sensor platform for holyiot."""
+"""HolyIot BLE battery sensor platform."""
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from homeassistant.components.bluetooth.passive_update_processor import (
+    PassiveBluetoothDataProcessor,
+    PassiveBluetoothDataUpdate,
+    PassiveBluetoothEntityKey,
+    PassiveBluetoothProcessorCoordinator,
+    PassiveBluetoothProcessorEntity,
+)
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorEntityDescription,
+    SensorStateClass,
+)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import PERCENTAGE
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
+from .ble_device import HolyIotUpdate
+from .const import DOMAIN
 
-from .entity import IntegrationBlueprintEntity
 
-if TYPE_CHECKING:
-    from homeassistant.core import HomeAssistant
-    from homeassistant.helpers.entity_platform import AddEntitiesCallback
-
-    from .coordinator import BlueprintDataUpdateCoordinator
-    from .data import IntegrationBlueprintConfigEntry
-
-ENTITY_DESCRIPTIONS = (
-    SensorEntityDescription(
-        key="holyiot",
-        name="Integration Sensor",
-        icon="mdi:format-quote-close",
-    ),
+BATTERY_SENSOR_DESCRIPTION = SensorEntityDescription(
+    key="battery",
+    device_class=SensorDeviceClass.BATTERY,
+    native_unit_of_measurement=PERCENTAGE,
+    state_class=SensorStateClass.MEASUREMENT,
 )
 
 
-async def async_setup_entry(
-    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
-    entry: IntegrationBlueprintConfigEntry,
-    async_add_entities: AddEntitiesCallback,
-) -> None:
-    """Set up the sensor platform."""
-    async_add_entities(
-        IntegrationBlueprintSensor(
-            coordinator=entry.runtime_data.coordinator,
-            entity_description=entity_description,
-        )
-        for entity_description in ENTITY_DESCRIPTIONS
+def _battery_update_to_bluetooth_data_update(
+    sensor_update: HolyIotUpdate,
+) -> PassiveBluetoothDataUpdate:
+    """Convert a HolyIotUpdate into a bluetooth data update."""
+
+    entity_key = PassiveBluetoothEntityKey("battery", None)
+
+    return PassiveBluetoothDataUpdate(
+        devices={},
+        entity_descriptions={entity_key: BATTERY_SENSOR_DESCRIPTION},
+        entity_data={entity_key: sensor_update.battery},
+        entity_names={entity_key: None},
     )
 
 
-class IntegrationBlueprintSensor(IntegrationBlueprintEntity, SensorEntity):
-    """holyiot Sensor class."""
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddConfigEntryEntitiesCallback,
+) -> None:
+    """Set up the HolyIot BLE battery sensor platform."""
 
-    def __init__(
-        self,
-        coordinator: BlueprintDataUpdateCoordinator,
-        entity_description: SensorEntityDescription,
-    ) -> None:
-        """Initialize the sensor class."""
-        super().__init__(coordinator)
-        self.entity_description = entity_description
+    coordinator: PassiveBluetoothProcessorCoordinator[HolyIotUpdate] = (
+        entry.runtime_data
+    )
+    processor: PassiveBluetoothDataProcessor[int | None, HolyIotUpdate]
+    processor = PassiveBluetoothDataProcessor(_battery_update_to_bluetooth_data_update)
+
+    entry.async_on_unload(
+        processor.async_add_entities_listener(
+            HolyIotBluetoothSensorEntity, async_add_entities
+        )
+    )
+    entry.async_on_unload(
+        coordinator.async_register_processor(processor, SensorEntityDescription)
+    )
+
+
+class HolyIotBluetoothSensorEntity(
+    PassiveBluetoothProcessorEntity[
+        PassiveBluetoothDataProcessor[int | None, HolyIotUpdate]
+    ],
+    SensorEntity,
+):
+    """Representation of a HolyIot BLE battery sensor."""
 
     @property
-    def native_value(self) -> str | None:
-        """Return the native value of the sensor."""
-        return self.coordinator.data.get("body")
+    def native_value(self) -> int | None:
+        """Return the native value."""
+
+        return self.processor.entity_data.get(self.entity_key)

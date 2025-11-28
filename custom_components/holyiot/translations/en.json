@@ -1,21 +1,20 @@
 {
     "config": {
         "step": {
+            "bluetooth_confirm": {
+                "description": "Add HolyIot BLE device: {name}"
+            },
             "user": {
-                "description": "If you need help with the configuration have a look here: https://github.com/ludeeus/holyiot",
+                "description": "Select a discovered HolyIot BLE device to add.",
                 "data": {
-                    "username": "Username",
-                    "password": "Password"
+                    "address": "Device address"
                 }
             }
         },
-        "error": {
-            "auth": "Username/Password is wrong.",
-            "connection": "Unable to connect to the server.",
-            "unknown": "Unknown error occurred."
-        },
         "abort": {
-            "already_configured": "This entry is already configured."
+            "already_configured": "This HolyIot device is already configured.",
+            "no_devices_found": "No HolyIot BLE devices found.",
+            "not_supported": "This Bluetooth device is not a supported HolyIot device."
         }
     }
 }

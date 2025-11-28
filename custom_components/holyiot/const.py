@@ -1,8 +1,5 @@
-"""Constants for holyiot."""
+"""Constants for the HolyIot Bluetooth integration."""
 
-from logging import Logger, getLogger
+from typing import Final
 
-LOGGER: Logger = getLogger(__package__)
-
-DOMAIN = "holyiot"
-ATTRIBUTION = "Data provided by http://jsonplaceholder.typicode.com/"
+DOMAIN: Final = "holyiot"

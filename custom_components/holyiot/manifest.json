@@ -6,7 +6,22 @@
   ],
   "config_flow": true,
   "documentation": "https://github.com/ludeeus/holyiot",
-  "iot_class": "cloud_polling",
+  "iot_class": "local_push",
   "issue_tracker": "https://github.com/ludeeus/holyiot/issues",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "dependencies": [
+    "bluetooth"
+  ],
+  "requirements": [],
+  "after_dependencies": [
+    "bluetooth"
+  ],
+  "bluetooth": [
+    {
+      "service_data_uuid": "00005242-0000-1000-8000-00805f9b34fb"
+    }
+  ],
+  "platforms": [
+    "sensor"
+  ]
 }
