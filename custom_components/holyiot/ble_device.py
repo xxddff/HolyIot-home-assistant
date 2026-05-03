@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import logging
-from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Final
+from typing import TYPE_CHECKING, Any, Final
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -89,7 +91,10 @@ class HolyIotBluetoothDeviceData:
                 return True
 
             _LOGGER.debug(
-                "HolyIot advertisement from %s ignored: %s payload too short (%d bytes)",
+                (
+                    "HolyIot advertisement from %s ignored: "
+                    "%s payload too short (%d bytes)"
+                ),
                 getattr(service_info, "address", "unknown"),
                 parser.parser_name,
                 len(payload),
